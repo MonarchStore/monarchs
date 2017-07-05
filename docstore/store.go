@@ -3,7 +3,7 @@ package docstore
 import "fmt"
 
 type Store interface {
-	GetHierarchyLabels() []Label
+	GetHierarchyLabels() Labels
 	CreateDocument(documentType Label, doc Document) (ID, error)
 	ReadDocument(documentType Label, id ID) (Document, error)
 	UpdateDocument(documentType Label, document Document) error
@@ -30,7 +30,7 @@ func (i *idGenerator) getAndIncrement() ID {
 	return current
 }
 
-func NewStore(labels []Label) Store {
+func NewStore(labels Labels) Store {
 	idGenerator := NewIDGenerator()
 	linkMap, linkedListHead := buildHierarchyLinkMap(labels, idGenerator)
 	return store{
@@ -46,7 +46,7 @@ type store struct {
 	linkedListHead *HierarchyLink
 }
 
-func buildHierarchyLinkMap(labels []Label, idGenerator IDGenerator) (HierarchyLinkyMap, *HierarchyLink) {
+func buildHierarchyLinkMap(labels Labels, idGenerator IDGenerator) (HierarchyLinkyMap, *HierarchyLink) {
 	linkedListHead := &HierarchyLink{
 		Label:       "__root__",
 		DocumentMap: make(DocumentMap),
@@ -80,8 +80,8 @@ func buildHierarchyLinkMap(labels []Label, idGenerator IDGenerator) (HierarchyLi
 	return linkMap, linkedListHead
 }
 
-func (s store) GetHierarchyLabels() []Label {
-	labels := make([]Label, len(s.linkMap))
+func (s store) GetHierarchyLabels() Labels {
+	labels := make(Labels, len(s.linkMap))
 
 	current := s.linkedListHead
 	i := 0

@@ -21,7 +21,7 @@ func main() {
 }
 
 type cliOpts struct {
-	labels []ds.Label
+	labels ds.Labels
 	addr   *string
 }
 
@@ -31,7 +31,7 @@ func readCLIOptions() cliOpts {
 	flag.Parse()
 
 	labels := strings.Split(*joinedLabelsPtr, ",")
-	hierarchyLabels := make([]ds.Label, len(labels))
+	hierarchyLabels := make(ds.Labels, len(labels))
 	for i, label := range labels {
 		hierarchyLabels[i] = ds.Label(label)
 	}
