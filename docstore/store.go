@@ -12,6 +12,8 @@ type Store interface {
 	DeleteDocument(documentType Label, id ID) error
 }
 
+type StoreMap map[string]Store
+
 type IDGenerator interface {
 	getAndIncrement() ID
 }
@@ -75,6 +77,7 @@ func buildHierarchyLinkMap(labels Labels, idGenerator IDGenerator) (HierarchyLin
 			ParentLink:  lastInserted,
 			ChildLink:   nil,
 		}
+		lastInserted.ChildLink = currentLink
 		linkMap[label] = currentLink
 		lastInserted = currentLink
 	}
@@ -88,14 +91,16 @@ func (s store) GenerateID() ID {
 
 func (s store) GetHierarchyLabels() Labels {
 	labels := make(Labels, len(s.linkMap))
-
 	current := s.linkedListHead
 	i := 0
-
-	for current.ChildLink != nil {
+	for {
 		labels[i] = current.Label
-		current = current.ChildLink
+
+		if current.ChildLink == nil {
+			break
+		}
 		i++
+		current = current.ChildLink
 	}
 
 	return labels

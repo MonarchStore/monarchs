@@ -10,21 +10,17 @@ type HTTPServer interface {
 	Listen(addr string) error
 }
 
-func NewHttpServer(store ds.Store) HTTPServer {
+func NewHttpServer() HTTPServer {
 	return &httpServer{
-		store: store,
+		storeMap: make(ds.StoreMap),
 	}
 }
 
 type httpServer struct {
-	store ds.Store
+	storeMap ds.StoreMap
 }
 
 func (s *httpServer) Listen(addr string) error {
-	http.HandleFunc("/data/", s.dataHandler)
-	http.HandleFunc("/schema/", s.schemaHandler)
+	http.HandleFunc("/", s.dataHandler)
 	return http.ListenAndServe(addr, Logger(http.DefaultServeMux))
-}
-
-func (s *httpServer) schemaHandler(w http.ResponseWriter, r *http.Request) {
 }

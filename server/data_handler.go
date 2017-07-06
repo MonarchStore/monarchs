@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,55 +9,99 @@ import (
 	"strconv"
 	"strings"
 
+	"log"
+
 	ds "bitbucket.org/enticusa/kingdb/docstore"
 	"bitbucket.org/enticusa/kingdb/serialization"
 )
 
+func parsePath(p string) parsedPath {
+	parts := strings.Split(p, "/")
+	count := len(parts)
+
+	parsed := parsedPath{
+		count: count,
+	}
+	if count > 0 {
+		parsed.storeName = parts[0]
+	}
+	if count > 1 {
+		parsed.documentType = ds.Label(parts[1])
+	}
+	if count > 2 {
+		parsed.documentID = ds.ID(parts[2])
+	}
+
+	return parsed
+}
+
+type parsedPath struct {
+	count        int
+	storeName    string
+	documentID   ds.ID
+	documentType ds.Label
+}
+
 func (s *httpServer) dataHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		s.handleGet(w, r)
-	case "POST":
-		s.handlePost(w, r)
-	case "PUT":
-		s.handlePut(w, r)
-	case "DELETE":
-		s.handlePut(w, r)
+	path := parsePath(strings.Trim(r.URL.Path, "/"))
+	signature := fmt.Sprintf("%s%d", r.Method, path.count)
+	log.Printf("%s %s %s\n", r.URL.Path, strings.Trim(r.URL.Path, "/"), signature)
+	log.Printf("path: %s, count: %d, store: %s, id: %s, type: %s\n", r.URL.Path, path.count, path.storeName, path.documentID, path.documentType)
+
+	switch signature {
+	case "GET3":
+		s.readDocument(w, r, path)
+	case "POST3":
+		s.createDocument(w, r, path)
+	case "PUT3":
+		s.updateDocument(w, r, path)
+	case "DELETE3":
+		s.deleteDocument(w, r, path)
+	case "GET1":
+		s.readSchema(w, r, path)
+	case "POST1":
+		s.createSchema(w, r, path)
+	case "DELETE1":
+		s.deleteSchema(w, r, path)
 	default:
 		s.handleUnkown(w, r)
 	}
 }
 
-func (s *httpServer) handlePost(w http.ResponseWriter, r *http.Request) {
-
-	pathParts := strings.Split(r.URL.Path, "/")
-	label := ds.Label(pathParts[2])
+func (s *httpServer) createDocument(w http.ResponseWriter, r *http.Request, path parsedPath) {
+	store, ok := s.storeMap[path.storeName]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
 
 	parentID := r.URL.Query().Get("parent")
-	documentID := ds.ID(pathParts[3])
 
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
+	fields := make(ds.KeyValueMap)
+	err = json.Unmarshal(body, &fields)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
 	}
 
-	fields := make(ds.KeyValueMap)
-	json.Unmarshal(body, &fields)
-
 	document := ds.Document{
-		ID:             documentID,
+		ID:             path.documentID,
 		ParentID:       ds.ID(parentID),
 		KeyValueFields: fields,
 	}
 
 	if document.ID == "" {
-		document.ID = s.store.GenerateID()
+		document.ID = store.GenerateID()
 	}
 
-	id, err := s.store.CreateDocument(label, document)
+	id, err := store.CreateDocument(path.documentType, document)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
@@ -65,11 +110,12 @@ func (s *httpServer) handlePost(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(id))
 }
 
-func (s *httpServer) handleGet(w http.ResponseWriter, r *http.Request) {
-	pathParts := strings.Split(r.URL.Path, "/")
-
-	label := ds.Label(pathParts[2])
-	documentID := ds.ID(pathParts[3])
+func (s *httpServer) readDocument(w http.ResponseWriter, r *http.Request, path parsedPath) {
+	store, ok := s.storeMap[path.storeName]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
 
 	depth, err := strconv.Atoi(r.URL.Query().Get("depth"))
 	if err != nil {
@@ -78,7 +124,7 @@ func (s *httpServer) handleGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	document, err := s.store.ReadDocument(label, documentID)
+	document, err := store.ReadDocument(path.documentType, path.documentID)
 	if err != nil {
 		errMsg := fmt.Sprintf("Error while reading document: %s", err)
 		http.Error(w, errMsg, http.StatusInternalServerError)
@@ -97,14 +143,114 @@ func (s *httpServer) handleGet(w http.ResponseWriter, r *http.Request) {
 	w.Write(json)
 }
 
-func (s *httpServer) handlePut(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "Updates not yet implemented", http.StatusNotImplemented)
+func (s *httpServer) updateDocument(w http.ResponseWriter, r *http.Request, path parsedPath) {
+	store, ok := s.storeMap[path.storeName]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotAcceptable)
+		return
+	}
+
+	fields := make(ds.KeyValueMap)
+	err = json.Unmarshal(body, &fields)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotAcceptable)
+		return
+	}
+
+	document := ds.Document{
+		ID:             path.documentID,
+		KeyValueFields: fields,
+	}
+
+	err = store.UpdateDocument(path.documentType, document)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotAcceptable)
+		return
+	}
+
+	w.Write([]byte("OK"))
 }
 
-func (s *httpServer) handleDelete(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "Deletes not yet implemented", http.StatusNotImplemented)
+func (s *httpServer) deleteDocument(w http.ResponseWriter, r *http.Request, path parsedPath) {
+	store, ok := s.storeMap[path.storeName]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+	err := store.DeleteDocument(path.documentType, path.documentID)
+	if err != nil {
+		errMsg := fmt.Sprintf("Error while deleting document: %s", err)
+		http.Error(w, errMsg, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("OK"))
+}
+
+func (s *httpServer) readSchema(w http.ResponseWriter, r *http.Request, path parsedPath) {
+	store, ok := s.storeMap[path.storeName]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+	labels := store.GetHierarchyLabels()
+
+	json, err := json.Marshal(labels)
+	if err != nil {
+		errMsg := fmt.Sprintf("Error while searializing schema: %s", err)
+		http.Error(w, errMsg, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(json)
+}
+
+func (s *httpServer) createSchema(w http.ResponseWriter, r *http.Request, path parsedPath) {
+	_, ok := s.storeMap[path.storeName]
+	if ok {
+		errMsg := fmt.Sprintf("Schema already exists: %s", path.storeName)
+		http.Error(w, errMsg, http.StatusNotAcceptable)
+		return
+	}
+
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	labelCount := bytes.Count(body, []byte(",")) + 1
+
+	labels := make(ds.Labels, labelCount)
+	err = json.Unmarshal(body, &labels)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotAcceptable)
+		return
+	}
+
+	s.storeMap[path.storeName] = ds.NewStore(labels)
+	w.Write([]byte("OK"))
+}
+
+func (s *httpServer) deleteSchema(w http.ResponseWriter, r *http.Request, path parsedPath) {
+	_, ok := s.storeMap[path.storeName]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+	delete(s.storeMap, path.storeName)
+	w.Write([]byte("OK"))
 }
 
 func (s *httpServer) handleUnkown(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "Unkwown Action", http.StatusBadRequest)
+	http.NotFound(w, r)
 }
