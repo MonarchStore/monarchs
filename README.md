@@ -45,3 +45,47 @@ $GOPATH/bin/kingdb --labels parent,child,grandchild
 ```
 
 ## REST API ##
+
+#### Sample Usage ####
+Below are sample CRUD actions for a registry of continents, countries, states, and cities.
+```
+# Create the "locations" schema
+POST localhost:6789/locations
+["continents", "countries", "states", "cities"]
+
+# Create a "continent"
+POST localhost:6789/locations/continents/north_america?parent=root
+{"name": "North America"}
+
+# Create a "country"
+POST localhost:6789/locations/countries/usa?parent=north_america
+{"name": "United States of America", "capital": "Washington, DC", "code": "usa"}
+
+# Create a "state"
+POST localhost:6789/locations/countries/ny?parent=usa
+{"name": "New York", "abbr": "NY"}
+
+# Create another "state"
+POST localhost:6789/locations/countries/ny?parent=usa
+{"name": "California", "abbr": "CA"}
+
+# Create a "city"
+POST localhost:6789/locations/cities/nyc?parent=ny
+{"name": "New York City"}
+
+# Update a "city"
+PUT localhost:6789/locations/cities/nyc
+{"name": "New York City", "population_in_millions": "8.491"}
+
+# Inspecting a "country" with all the "states" and "cities"
+GET localhost:6789/locations/countries/usa?depth=2
+
+# Inspecting a "country" only without any "states"
+GET localhost:6789/locations/countries/usa?depth=0
+
+# Delete a "country". All child "states" and "cities" are deleted as well
+DELETE localhost:6789/locations/countries/usa
+
+# Delete the "locations" schema
+DELETE localhost:6789/locations
+```
