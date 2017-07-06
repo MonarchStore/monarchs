@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	ds "github.com/arturom/docdb/docstore"
-	"github.com/arturom/docdb/serialization"
+	ds "bitbucket.org/enticusa/kingdb/docstore"
+	"bitbucket.org/enticusa/kingdb/serialization"
 )
 
 func (s *httpServer) dataHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,14 +32,12 @@ func (s *httpServer) handlePost(w http.ResponseWriter, r *http.Request) {
 	pathParts := strings.Split(r.URL.Path, "/")
 	label := ds.Label(pathParts[2])
 
-	parentID, err := strconv.Atoi(r.URL.Query().Get("parent"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotAcceptable)
-		return
-	}
+	parentID := r.URL.Query().Get("parent")
+	documentID := ds.ID(pathParts[3])
 
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotAcceptable)
 		return
@@ -49,8 +47,13 @@ func (s *httpServer) handlePost(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(body, &fields)
 
 	document := ds.Document{
+		ID:             documentID,
 		ParentID:       ds.ID(parentID),
 		KeyValueFields: fields,
+	}
+
+	if document.ID == "" {
+		document.ID = s.store.GenerateID()
 	}
 
 	id, err := s.store.CreateDocument(label, document)
@@ -59,20 +62,14 @@ func (s *httpServer) handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(strconv.Itoa(int(id))))
+	w.Write([]byte(id))
 }
 
 func (s *httpServer) handleGet(w http.ResponseWriter, r *http.Request) {
 	pathParts := strings.Split(r.URL.Path, "/")
 
 	label := ds.Label(pathParts[2])
-
-	id, err := strconv.Atoi(string(pathParts[3]))
-	if err != nil {
-		errMsg := fmt.Sprintf("Invalid document ID: %s", err)
-		http.Error(w, errMsg, http.StatusNotAcceptable)
-		return
-	}
+	documentID := ds.ID(pathParts[3])
 
 	depth, err := strconv.Atoi(r.URL.Query().Get("depth"))
 	if err != nil {
@@ -80,8 +77,6 @@ func (s *httpServer) handleGet(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, errMsg, http.StatusNotAcceptable)
 		return
 	}
-
-	documentID := ds.ID(id)
 
 	document, err := s.store.ReadDocument(label, documentID)
 	if err != nil {
@@ -98,6 +93,7 @@ func (s *httpServer) handleGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	w.Write(json)
 }
 

@@ -1,8 +1,10 @@
 package docstore
 
 import "fmt"
+import "strconv"
 
 type Store interface {
+	GenerateID() ID
 	GetHierarchyLabels() Labels
 	CreateDocument(documentType Label, doc Document) (ID, error)
 	ReadDocument(documentType Label, id ID) (Document, error)
@@ -21,13 +23,13 @@ func NewIDGenerator() IDGenerator {
 }
 
 type idGenerator struct {
-	nextID ID
+	nextID int
 }
 
 func (i *idGenerator) getAndIncrement() ID {
 	current := i.nextID
 	i.nextID++
-	return current
+	return ID(strconv.Itoa(current))
 }
 
 func NewStore(labels Labels) Store {
@@ -48,16 +50,16 @@ type store struct {
 
 func buildHierarchyLinkMap(labels Labels, idGenerator IDGenerator) (HierarchyLinkyMap, *HierarchyLink) {
 	linkedListHead := &HierarchyLink{
-		Label:       "__root__",
+		Label:       "root",
 		DocumentMap: make(DocumentMap),
 		ParentLink:  nil,
 		ChildLink:   nil,
 	}
 	rootDocument := Document{
-		ID:              idGenerator.getAndIncrement(),
+		ID:              "root",
 		NestedDocuments: make(DocumentMap),
 		KeyValueFields:  make(KeyValueMap),
-		ParentID:        -1,
+		ParentID:        "root_parent",
 	}
 	linkedListHead.DocumentMap[rootDocument.ID] = &rootDocument
 
@@ -78,6 +80,10 @@ func buildHierarchyLinkMap(labels Labels, idGenerator IDGenerator) (HierarchyLin
 	}
 
 	return linkMap, linkedListHead
+}
+
+func (s store) GenerateID() ID {
+	return s.idGenerator.getAndIncrement()
 }
 
 func (s store) GetHierarchyLabels() Labels {
@@ -103,10 +109,14 @@ func (s store) CreateDocument(documentType Label, doc Document) (ID, error) {
 
 	parentDocument, ok := link.ParentLink.DocumentMap[doc.ParentID]
 	if !ok {
-		return doc.ID, fmt.Errorf("Cannot create document. Parent ID not found: %s:%d", link.ParentLink.Label, doc.ParentID)
+		return doc.ID, fmt.Errorf("Cannot create document. Parent ID not found: %s:%s", link.ParentLink.Label, doc.ParentID)
 	}
 
-	doc.ID = s.idGenerator.getAndIncrement()
+	_, exists := link.DocumentMap[doc.ID]
+	if exists {
+		return doc.ID, fmt.Errorf("Cannot create document. Document ID already exists: %s:%s", link.Label, doc.ID)
+	}
+
 	doc.NestedDocuments = make(DocumentMap)
 
 	if doc.KeyValueFields == nil {
@@ -126,7 +136,7 @@ func (s store) ReadDocument(documentType Label, id ID) (Document, error) {
 	}
 	document, ok := link.DocumentMap[id]
 	if !ok {
-		return Document{}, fmt.Errorf("Cannot retrieve document. Document ID not found: %s:%d", documentType, id)
+		return Document{}, fmt.Errorf("Cannot retrieve document. Document ID not found: %s:%s", documentType, id)
 	}
 	return *document, nil
 }
@@ -138,7 +148,7 @@ func (s store) UpdateDocument(documentType Label, document Document) error {
 	}
 	existingDocument, ok := link.DocumentMap[document.ID]
 	if !ok {
-		return fmt.Errorf("Cannot update document. Document ID not found: %s:%d", documentType, document.ID)
+		return fmt.Errorf("Cannot update document. Document ID not found: %s:%s", documentType, document.ID)
 	}
 	existingDocument.KeyValueFields = document.KeyValueFields
 	return nil
@@ -152,12 +162,12 @@ func (s store) DeleteDocument(documentType Label, id ID) error {
 
 	document, ok := link.DocumentMap[id]
 	if !ok {
-		return fmt.Errorf("Cannot delete document. Document ID not found: %s:%d", documentType, document.ID)
+		return fmt.Errorf("Cannot delete document. Document ID not found: %s:%s", documentType, document.ID)
 	}
 
 	parentDocument, ok := link.ParentLink.DocumentMap[document.ParentID]
 	if !ok {
-		return fmt.Errorf("Cannot delete document. Parent ID not found: %s:%d", link.ParentLink.Label, document.ParentID)
+		return fmt.Errorf("Cannot delete document. Parent ID not found: %s:%s", link.ParentLink.Label, document.ParentID)
 	}
 
 	delete(parentDocument.NestedDocuments, document.ID)

@@ -1,15 +1,31 @@
 package serialization
 
-import ds "github.com/arturom/docdb/docstore"
-import "encoding/json"
+import (
+	"encoding/json"
+	"sort"
 
-type ReadModelSlice []ReadModel
+	ds "bitbucket.org/enticusa/kingdb/docstore"
+)
 
 type ReadModel struct {
 	ID       ds.ID          `json:"id"`
 	ParentID ds.ID          `json:"parent_id"`
 	Values   ds.KeyValueMap `json:"values"`
 	Children ReadModelSlice `json:"children"`
+}
+
+type ReadModelSlice []ReadModel
+
+func (s ReadModelSlice) Len() int {
+	return len(s)
+}
+
+func (s ReadModelSlice) Less(i, j int) bool {
+	return s[i].ID < s[j].ID
+}
+
+func (s ReadModelSlice) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
 func mapDocumentToReadModel(d *ds.Document, depth int) ReadModel {
@@ -24,6 +40,8 @@ func mapDocumentToReadModel(d *ds.Document, depth int) ReadModel {
 			children[childIndex] = mapDocumentToReadModel(c, depth-1)
 			childIndex++
 		}
+
+		sort.Sort(children)
 	}
 
 	return ReadModel{

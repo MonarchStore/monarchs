@@ -5,8 +5,8 @@ import (
 	"log"
 	"strings"
 
-	ds "github.com/arturom/docdb/docstore"
-	"github.com/arturom/docdb/server"
+	ds "bitbucket.org/enticusa/kingdb/docstore"
+	"bitbucket.org/enticusa/kingdb/server"
 )
 
 func main() {

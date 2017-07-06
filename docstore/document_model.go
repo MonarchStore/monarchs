@@ -1,6 +1,6 @@
 package docstore
 
-type ID int32
+type ID string
 
 type KeyValueMap map[string]string
 
