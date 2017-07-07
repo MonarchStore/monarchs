@@ -5,9 +5,10 @@ A hierarchical in-memory data store with a RESTful API.
 A hierarchical data store is a service which provides a way to organize data entities under a parent element. In a hierarchical data store, the levels are predefined.
 
 For example:
-  - Continents have countries
-  - Countries may have states (or a subdivision)
-  - States have cities
+
+* Continents have countries
+* Countries may have states (or a subdivision)
+* States have cities
 
 The hierarchy is then defined as: `continents` -> `countries` -> `states` -> `cities`
 
