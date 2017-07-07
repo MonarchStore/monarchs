@@ -51,15 +51,13 @@ go install
 
 #### Running the database ####
 ```
-$GOPATH/bin/kingdb --labels parent,child,grandchild
+$GOPATH/bin/kingdb
 ```
 
 #### CLI Options ###
 ```
   -addr string
         The binding address (default ":6789")
-  -labels string
-        A comma-separated, ordered list of the labels of elements in the hieararchy
 ```
 
 ## REST API ##
