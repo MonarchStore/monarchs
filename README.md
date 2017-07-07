@@ -1,18 +1,36 @@
 # KingDB #
 A hierarchical in-memory data store with a RESTful API.
 
+## What is a hierarchical data store? ##
+A hierarchical data store is a service which provides a way to organize data entities under a parent element. In a hierarchical data store, the levels are predefined.
+
+For example:
+  - Continents have countries
+  - Countries may have states (or a subdivision)
+  - States have cities
+
+The hierarchy is then defined as: `continents` -> `countries` -> `states` -> `cities`
+
+A hierarchical data store makes it simple to create and query the stored entities and their relationships.
+
+A hierarchical data store enforces all elements to have a parent of the predefined type. In our example domain described above, countries cannot exist without a parent continent, and cities cannot be direct children of a country.
+
+To get a country's properties along with the states of that country and the cities in those states, an application issues a query with the `countries` labe, the country's ID and a depth parameter set to 2.
+
 ## Why use a hierarchical data store? ##
 Some applications can represent their data model as a hierarchy of entities. A specialized data store can take advantage of optimized data structures, simplify the query model and reduce application development time and complexity.
 
 Relational database can be slow since joins are performed at query time. Moreover, they often require the application to make a trade-off between making multiple round trips or repeating the joinned data when a query involves many tables.
 
-Graph databases perform fast joins with hard-links, but provide too much flexibility in how entities are related. For a hierarchy data model, the client application is left with the responsibility of defining the edges that connect the vertices in every query. With graph databases, clients must construct a query string, which in essence redundantly redeclares the data model. There is a neglible but existent step for the graph databases to parse this query on every request.
+Graph databases perform fast joins with hard-links, but provide too much flexibility. Any vertex can be linked to any other vertex of any type. In a graph database, vertices can be created even without a parent. A hierarchical data store enforces every newly created entity to have a parent. Top level entities are created under the "root" entity. 
+
+At query time, applications using graph databases must construct a query. Graph database queries, in essence, redundantly redeclare the realtionships of the elements in the hierarchy. There is a neglible but existent step for the graph databases to parse this query on every request.
 
 Key-Value stores provide the fastest reads when all data is stored as a JSON blob, but frequently modifying a deeply nested value becomes an inneficient and perhaps complex task.
 
 Document stores need to make multiple round trips to get the child entities. The alternative is to store all the data into a single, highly-nested document, which is inneficient to update, and so large that it can be difficult to work with.
 
-## Features ##
+## KingDB Features ##
 - Queries can return any entity in any of the hierarchy levels.
 - Queries can specify the depth level of child entities to reduce the amount of data returned.
 - Each entity can be updated independently of it's parent or child entities.
