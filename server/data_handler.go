@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 
-	"log"
-
 	ds "bitbucket.org/enticusa/kingdb/docstore"
 	"bitbucket.org/enticusa/kingdb/serialization"
 )
@@ -45,8 +43,6 @@ type parsedPath struct {
 func (s *httpServer) dataHandler(w http.ResponseWriter, r *http.Request) {
 	path := parsePath(strings.Trim(r.URL.Path, "/"))
 	signature := fmt.Sprintf("%s%d", r.Method, path.count)
-	log.Printf("%s %s %s\n", r.URL.Path, strings.Trim(r.URL.Path, "/"), signature)
-	log.Printf("path: %s, count: %d, store: %s, id: %s, type: %s\n", r.URL.Path, path.count, path.storeName, path.documentID, path.documentType)
 
 	switch signature {
 	case "GET3":
