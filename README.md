@@ -16,7 +16,7 @@ A hierarchical data store makes it simple to create and query the stored entitie
 
 A hierarchical data store enforces all elements to have a parent of the predefined type. In our example domain described above, countries cannot exist without a parent continent, and cities cannot be direct children of a country.
 
-To get a country's properties along with the states of that country and the cities in those states, an application issues a query with the `countries` labe, the country's ID and a depth parameter set to 2.
+To get a country's properties along with the states of that country and the cities in those states, an application issues a query with the `countries` label, the country's ID and a depth parameter set to 2.
 
 ## Why use a hierarchical data store? ##
 Some applications can represent their data model as a hierarchy of entities. A specialized data store can take advantage of optimized data structures, simplify the query model and reduce application development time and complexity.
