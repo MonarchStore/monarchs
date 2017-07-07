@@ -34,6 +34,7 @@ Document stores need to make multiple round trips to get the child entities. The
 ## KingDB Features ##
 - Queries can return any entity in any of the hierarchy levels.
 - Queries can specify the depth level of child entities to reduce the amount of data returned.
+- Entities may have key-value properties. (Currently keys and values must be strings)
 - Each entity can be updated independently of it's parent or child entities.
 - In memory storage provides speedy reads and writes atomically.
 - A RESTful HTTP interface combines the application relational logic and the data store. When there is no additional domain logic, putting KingDB behind an API Gateway makes writing REST APIs unnecessary. As a consequence, deployments are simpler and the number of servers is reduces.
