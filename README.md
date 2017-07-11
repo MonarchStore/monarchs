@@ -81,11 +81,11 @@ POST localhost:6789/locations/countries/usa?parent=north_america
 {"name": "United States of America", "capital": "Washington, DC", "code": "usa"}
 
 # Create a "state"
-POST localhost:6789/locations/countries/ny?parent=usa
+POST localhost:6789/locations/states/ny?parent=usa
 {"name": "New York", "abbr": "NY"}
 
 # Create another "state"
-POST localhost:6789/locations/countries/ny?parent=usa
+POST localhost:6789/locations/states/ca?parent=usa
 {"name": "California", "abbr": "CA"}
 
 # Create a "city"
