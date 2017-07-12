@@ -14,18 +14,18 @@ The hierarchy is then defined as: `continents` -> `countries` -> `states` -> `ci
 
 A hierarchical data store enforces all elements to have a parent of the predefined type. In our example domain described above, countries cannot exist without a parent continent, and cities cannot be created as direct children of a country.
 
-A hierarchical data store makes it simple to query the stored entities and their relationships. To get a country's properties along with the states of that country and the cities in those states, an application issues a query with the `countries` label, the country's ID and a depth parameter set to 2.
+A hierarchical data store makes it simple to query the stored entities and their relationships. To get a country's properties along with the states of that country and the cities in those states, an application issues a query with the `countries` label, the country's ID and the `depth` parameter set to 2.
 
 ## Why use a hierarchical data store? ##
 Some applications can represent their data model as a hierarchy of entities. A specialized data store can take advantage of optimized data structures, simplify the query model and reduce application development time and complexity.
 
-Relational database, such as MySQL or PostgreSQL, can be slow since joins are performed at query time. Moreover, they often require the application to make a trade-off between making multiple round trips or repeating the joinned data when a query involves many tables.
+Relational database, such as MySQL or PostgreSQL, can be slow since joins are computed at query time. Moreover, they often require the application to make a trade-off between making multiple round trips or repeating the joinned data when a query involves many tables. A hierarchical database can provide the data of an entire hierarchy with a single request.
 
-Graph databases, such as Neo4J or OrientDB, perform fast joins with hard-links, but provide too much flexibility. In a graph database, any vertex can be linked to any other vertex of any type and vertices can be created even without a parent vertex to attach to. A hierarchical data store enforces every newly created entity to have a parent. Top level entities are created under the "root" entity. 
+Graph databases, such as Neo4J or OrientDB, store hard-links between entities and don't have to compute joins at query time. Yet, graph databases provide too much flexibility. In a graph database, any vertex can be linked to any other vertex of any type and vertices can be created even without a parent vertex to attach to. A hierarchical data store enforces every newly created entity to have a parent. Top level entities are created under the "root" entity. 
 
-Applications querying a graph databases must construct a query string. These graph queries, in essence, redundantly redeclare the realtionships of the elements in the hierarchy. There is a neglible but existent step for the graph databases to parse this query on every request.
+Applications querying a graph databases must construct a query string. These graph queries, in essence, redundantly redeclare the realtionships of the elements in the hierarchy. There is a neglible but existent step for the graph databases to parse this query on every request. A hierarchical data store can leverage structures such as a doubly-linked list to know the antecessor and supercessor of a level.
 
-Key-Value stores, such as Redis or Riak KV, provide the fastest reads when all data is stored as a JSON blob, but frequently modifying a deeply nested value becomes an inneficient and perhaps complex task.
+Key-Value stores, such as Redis or Riak KV, provide the fastest reads when all data is stored as a JSON blob, but frequently modifying a deeply nested value is inneficient. The application must pull the entire hierarchy from the root to the leaves, deserialize it, make changes, serialize it, and update the data store.
 
 Document stores, such as MongoDB or Elasticsearch, need to make multiple round trips to get the child entities. The alternative is to store all the data into a single, highly-nested document, which is inneficient to update, and so large that it can be difficult to work with.
 
