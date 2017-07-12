@@ -97,10 +97,10 @@ PUT localhost:6789/locations/cities/nyc
 {"name": "New York City", "population_in_millions": "8.491"}
 
 # Inspecting a "country" with all the "states" and "cities"
-GET localhost:6789/locations/states/usa?depth=2
+GET localhost:6789/locations/countries/usa?depth=2
 
 # Inspecting a "country" only without any "states"
-GET localhost:6789/locations/states/usa?depth=0
+GET localhost:6789/locations/countries/usa?depth=0
 
 # Delete a "country". All child "states" and "cities" are deleted as well
 DELETE localhost:6789/locations/countries/usa
