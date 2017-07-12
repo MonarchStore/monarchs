@@ -1,5 +1,5 @@
 # KingDB #
-A hierarchical, in-memory data store with a RESTful API.
+A hierarchical, NoSQL, in-memory data store with a RESTful API.
 
 ## What is a hierarchical data store? ##
 A hierarchical data store is a service which facilitates CRUD actions on data organized in predefined structures with parent-child relationships.
@@ -19,14 +19,18 @@ A hierarchical data store makes it simple to query the stored entities and their
 ## Why use a hierarchical data store? ##
 Some applications can represent their data model as a hierarchy of entities. A specialized data store can take advantage of optimized data structures, simplify the query model and reduce application development time and complexity.
 
+#### How does it compare against a relational database? ####
 Relational database, such as MySQL or PostgreSQL, can be slow since joins are computed at query time. Moreover, they often require the application to make a trade-off between making multiple round trips or repeating the joinned data when a query involves many tables. A hierarchical database can provide the data of an entire hierarchy with a single request.
 
+#### How does it compare against a graph database? ####
 Graph databases, such as Neo4J or OrientDB, store hard-links between entities and don't have to compute joins at query time. Yet, graph databases provide too much flexibility. In a graph database, any vertex can be linked to any other vertex of any type and vertices can be created even without a parent vertex to attach to. A hierarchical data store enforces every newly created entity to have a parent. Top level entities are created under the "root" entity. 
 
 Applications querying a graph databases must construct a query string. These graph queries, in essence, redundantly redeclare the realtionships of the elements in the hierarchy. There is a neglible but existent step for the graph databases to parse this query on every request. A hierarchical data store can leverage structures such as a doubly-linked list to know the antecessor and supercessor of a level.
 
+#### How does it compare against a key-value store? ####
 Key-Value stores, such as Redis or Riak KV, provide the fastest reads when all data is stored as a JSON blob, but frequently modifying a deeply nested value is inneficient. The application must pull the entire hierarchy from the root to the leaves, deserialize it, make changes, serialize it, and update the data store.
 
+#### How does it compare against a document store? ####
 Document stores, such as MongoDB or Elasticsearch, need to make multiple round trips to get the child entities. The alternative is to store all the data into a single, highly-nested document, which is inneficient to update, and so large that it can be difficult to work with.
 
 ## KingDB Features ##
