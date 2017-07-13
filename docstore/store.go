@@ -167,7 +167,7 @@ func (s store) DeleteDocument(documentType Label, id ID) error {
 
 	document, ok := link.DocumentMap[id]
 	if !ok {
-		return fmt.Errorf("Cannot delete document. Document ID not found: %s:%s", documentType, document.ID)
+		return fmt.Errorf("Cannot delete document. Document ID not found: %s:%s", documentType, id)
 	}
 
 	parentDocument, ok := link.ParentLink.DocumentMap[document.ParentID]
@@ -175,8 +175,8 @@ func (s store) DeleteDocument(documentType Label, id ID) error {
 		return fmt.Errorf("Cannot delete document. Parent ID not found: %s:%s", link.ParentLink.Label, document.ParentID)
 	}
 
+	delete(link.DocumentMap, document.ID)
 	delete(parentDocument.NestedDocuments, document.ID)
-	delete(link.ParentLink.DocumentMap, document.ID)
 
 	return nil
 }

@@ -186,7 +186,6 @@ func (s *httpServer) deleteDocument(w http.ResponseWriter, r *http.Request, path
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("OK"))
 }
 
