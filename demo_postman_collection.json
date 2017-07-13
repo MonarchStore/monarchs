@@ -1,0 +1,431 @@
+{
+	"variables": [],
+	"info": {
+		"name": "KingDB Demo",
+		"_postman_id": "9eb27cc7-4aa2-b30b-b360-bb03d1302074",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create the \"locations\" schema",
+			"request": {
+				"url": "localhost:6789/locations/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\"continents\", \"countries\", \"states\", \"cities\"]"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Read the \"locations\" schema",
+			"request": {
+				"url": "localhost:6789/locations/",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create a \"continent\" under the \"root\"",
+			"request": {
+				"url": {
+					"raw": "localhost:6789/locations/continents/north_america?parent=root",
+					"host": [
+						"localhost"
+					],
+					"port": "6789",
+					"path": [
+						"locations",
+						"continents",
+						"north_america"
+					],
+					"query": [
+						{
+							"key": "parent",
+							"value": "root",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"North America\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create a \"country\"",
+			"request": {
+				"url": {
+					"raw": "localhost:6789/locations/countries/usa?parent=north_america",
+					"host": [
+						"localhost"
+					],
+					"port": "6789",
+					"path": [
+						"locations",
+						"countries",
+						"usa"
+					],
+					"query": [
+						{
+							"key": "parent",
+							"value": "north_america",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"United States of America\", \"capital\": \"Washington, DC\", \"code\": \"usa\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create a \"state\"",
+			"request": {
+				"url": {
+					"raw": "localhost:6789/locations/states/ny?parent=usa",
+					"host": [
+						"localhost"
+					],
+					"port": "6789",
+					"path": [
+						"locations",
+						"states",
+						"ny"
+					],
+					"query": [
+						{
+							"key": "parent",
+							"value": "usa",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"New York\", \"abbr\": \"NY\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create another \"state\"",
+			"request": {
+				"url": {
+					"raw": "localhost:6789/locations/states/ca?parent=usa",
+					"host": [
+						"localhost"
+					],
+					"port": "6789",
+					"path": [
+						"locations",
+						"states",
+						"ca"
+					],
+					"query": [
+						{
+							"key": "parent",
+							"value": "usa",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"California\", \"abbr\": \"CA\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create a \"city\"",
+			"request": {
+				"url": {
+					"raw": "localhost:6789/locations/cities/nyc?parent=ny",
+					"host": [
+						"localhost"
+					],
+					"port": "6789",
+					"path": [
+						"locations",
+						"cities",
+						"nyc"
+					],
+					"query": [
+						{
+							"key": "parent",
+							"value": "ny",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"New York City\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update a \"city\"",
+			"request": {
+				"url": "localhost:6789/locations/cities/nyc",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"New York City\", \"population_in_millions\": \"8.491\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Read a \"country\" with all the \"states\" and \"cities\"",
+			"request": {
+				"url": {
+					"raw": "localhost:6789/locations/countries/usa?depth=2",
+					"host": [
+						"localhost"
+					],
+					"port": "6789",
+					"path": [
+						"locations",
+						"countries",
+						"usa"
+					],
+					"query": [
+						{
+							"key": "depth",
+							"value": "2",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Read a \"country\" only, without any \"states\"",
+			"request": {
+				"url": {
+					"raw": "localhost:6789/locations/countries/usa?depth=0",
+					"host": [
+						"localhost"
+					],
+					"port": "6789",
+					"path": [
+						"locations",
+						"countries",
+						"usa"
+					],
+					"query": [
+						{
+							"key": "depth",
+							"value": "0",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Read the document root",
+			"request": {
+				"url": {
+					"raw": "localhost:6789/locations/root/root?depth=4",
+					"host": [
+						"localhost"
+					],
+					"port": "6789",
+					"path": [
+						"locations",
+						"root",
+						"root"
+					],
+					"query": [
+						{
+							"key": "depth",
+							"value": "4",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a \"country\". All child \"states\" and \"cities\" are deleted as well",
+			"request": {
+				"url": "localhost:6789/locations/countries/usa",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete the \"locations\" schema",
+			"request": {
+				"url": "localhost:6789/locations",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

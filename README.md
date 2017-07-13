@@ -67,13 +67,13 @@ $GOPATH/bin/kingdb
 ## REST API ##
 
 #### Sample Usage ####
-Below are sample CRUD actions for a registry of `continents` -> `countries` -> `states` -> `cities`.
+Below are sample REST CRUD actions for a registry of `continents` -> `countries` -> `states` -> `cities`. These actions are available as a [Postman collection](demo_postman_collection.json).
 ```
 # Create the "locations" schema
 POST localhost:6789/locations
 ["continents", "countries", "states", "cities"]
 
-# Review the "locations" schema we just created
+# Read the "locations" schema we just created
 GET localhost:6789/locations
 
 # Create a "continent" under the "root"
@@ -100,11 +100,14 @@ POST localhost:6789/locations/cities/nyc?parent=ny
 PUT localhost:6789/locations/cities/nyc
 {"name": "New York City", "population_in_millions": "8.491"}
 
-# Inspecting a "country" with all the "states" and "cities"
+# Read "country", with all the "states" and "cities"
 GET localhost:6789/locations/countries/usa?depth=2
 
-# Inspecting a "country" only without any "states"
+# Read "country", without any "states"
 GET localhost:6789/locations/countries/usa?depth=0
+
+# Read the entire hierarchy root
+GET localhost:6789/locations/root/root?depth=4
 
 # Delete a "country". All child "states" and "cities" are deleted as well
 DELETE localhost:6789/locations/countries/usa
