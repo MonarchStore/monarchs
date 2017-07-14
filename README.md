@@ -36,7 +36,7 @@ Document stores, such as MongoDB or Elasticsearch, need to make multiple round t
 ## KingDB Features ##
 - Queries can return any entity in any of the hierarchy levels.
 - Queries can specify the depth level of child entities to reduce the amount of data returned.
-- Entities may have key-value properties. (Currently keys and values must be strings)
+- Entities may have key-value properties.
 - Each entity can be updated independently of it's parent or child entities.
 - In memory storage provides speedy reads and writes atomically.
 - A RESTful HTTP interface combines the application relational logic and the data store. When there is no additional domain logic, putting KingDB behind an API Gateway makes writing REST APIs unnecessary. As a consequence, deployments are simpler and the number of servers is reduced.
@@ -98,7 +98,7 @@ POST localhost:6789/locations/cities/nyc?parent=ny
 
 # Update a "city"
 PUT localhost:6789/locations/cities/nyc
-{"name": "New York City", "population_in_millions": "8.491"}
+{"name": "New York City", "stats": {"population_in_millions": 8.491}}
 
 # Read "country", with all the "states" and "cities"
 GET localhost:6789/locations/countries/usa?depth=2

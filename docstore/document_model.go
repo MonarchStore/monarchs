@@ -2,7 +2,7 @@ package docstore
 
 type ID string
 
-type KeyValueMap map[string]string
+type KeyValueMap map[string]interface{}
 
 type DocumentMap map[ID]*Document
 
