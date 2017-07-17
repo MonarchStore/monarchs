@@ -31,7 +31,7 @@ Applications querying a graph database must construct a query string. These grap
 Key-Value stores, such as Redis or Riak KV, provide the fastest reads when all data is stored as a JSON blob, but frequently modifying a deeply nested value is inneficient. The application must pull the entire hierarchy from the root to the leaves, deserialize it, make changes, serialize it, and update the data store. A hierarchical data store allows applications to efficiently create or update a single nested entity without reading all other entities in the hierarchy.
 
 #### How does it compare against a document store? ####
-Document stores, such as MongoDB or Elasticsearch, need to make multiple round trips to get the child entities. The alternative is to store all the data into a single, highly-nested document, which is inneficient to update, and so large that it can be difficult to work with.
+Document stores, such as MongoDB or Elasticsearch, need to make multiple round trips to get the child entities. The alternative is to store all the data into a single, large, highly-nested document, which is inneficient to fetch and update, and so large that it becomes too difficult to handle.
 
 ## KingDB Features ##
 - Queries can return any entity in any of the hierarchy levels.
