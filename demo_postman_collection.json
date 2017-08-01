@@ -261,7 +261,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"name\": \"New York City\", \"population_in_millions\": \"8.491\"}"
+					"raw": "{\"name\": \"New York City\", \"stats\": {\"population_in_millions\": 8.491}}"
 				},
 				"description": ""
 			},
@@ -365,6 +365,52 @@
 						{
 							"key": "depth",
 							"value": "4",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Read a \"city\" and its parent \"state\" and \"country\"",
+			"request": {
+				"url": {
+					"raw": "localhost:6789/locations/cities/nyc?depth=0&parents=2",
+					"host": [
+						"localhost"
+					],
+					"port": "6789",
+					"path": [
+						"locations",
+						"cities",
+						"nyc"
+					],
+					"query": [
+						{
+							"key": "depth",
+							"value": "0",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "parents",
+							"value": "2",
 							"equals": true,
 							"description": ""
 						}

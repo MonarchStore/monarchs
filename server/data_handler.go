@@ -120,6 +120,17 @@ func (s *httpServer) readDocument(w http.ResponseWriter, r *http.Request, path p
 		return
 	}
 
+	parentCountStr := r.URL.Query().Get("parents")
+	parentCount := 0
+	if parentCountStr != "" {
+		parentCount, err = strconv.Atoi(parentCountStr)
+		if err != nil {
+			errMsg := fmt.Sprintf("Invalid parent parameter: %s", err)
+			http.Error(w, errMsg, http.StatusNotAcceptable)
+			return
+		}
+	}
+
 	document, err := store.ReadDocument(path.documentType, path.documentID)
 	if err != nil {
 		errMsg := fmt.Sprintf("Error while reading document: %s", err)
@@ -127,7 +138,9 @@ func (s *httpServer) readDocument(w http.ResponseWriter, r *http.Request, path p
 		return
 	}
 
-	json, err := serialization.SerializeDocument(&document, int(depth))
+	parents, err := store.ReadParentDocuments(path.documentType, path.documentID, parentCount)
+
+	json, err := serialization.SerializeDocument(&document, int(depth), parents)
 	if err != nil {
 		errMsg := fmt.Sprintf("Error while searializing document: %s", err)
 		http.Error(w, errMsg, http.StatusInternalServerError)

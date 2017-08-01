@@ -12,6 +12,7 @@ type ReadModel struct {
 	ParentID ds.ID          `json:"parent_id"`
 	Values   ds.KeyValueMap `json:"values"`
 	Children ReadModelSlice `json:"children"`
+	Parents  []ReadModel    `json:"parents,omitempty"`
 }
 
 type ReadModelSlice []ReadModel
@@ -52,7 +53,18 @@ func mapDocumentToReadModel(d *ds.Document, depth int) ReadModel {
 	}
 }
 
-func SerializeDocument(d *ds.Document, depth int) ([]byte, error) {
+func SerializeDocument(d *ds.Document, depth int, parents ds.DocumentSlice) ([]byte, error) {
 	m := mapDocumentToReadModel(d, depth)
+	m.Parents = make([]ReadModel, len(parents))
+	i := 0
+
+	for _, d := range parents {
+		if d == nil {
+			break
+		}
+		m.Parents[i] = mapDocumentToReadModel(d, 0)
+		i++
+	}
+
 	return json.Marshal(m)
 }

@@ -8,6 +8,7 @@ type Store interface {
 	GetHierarchyLabels() Labels
 	CreateDocument(documentType Label, doc Document) (ID, error)
 	ReadDocument(documentType Label, id ID) (Document, error)
+	ReadParentDocuments(documentType Label, id ID, parentCount int) (DocumentSlice, error)
 	UpdateDocument(documentType Label, document Document) error
 	DeleteDocument(documentType Label, id ID) error
 }
@@ -144,6 +145,37 @@ func (s store) ReadDocument(documentType Label, id ID) (Document, error) {
 		return Document{}, fmt.Errorf("Cannot retrieve document. Document ID not found: %s:%s", documentType, id)
 	}
 	return *document, nil
+}
+
+func (s store) ReadParentDocuments(documentType Label, id ID, parentCount int) (DocumentSlice, error) {
+	maxParentCount := parentCount
+	if len(s.linkMap) < maxParentCount {
+		maxParentCount = len(s.linkMap)
+	}
+	parents := make(DocumentSlice, maxParentCount)
+
+	link, ok := s.linkMap[documentType]
+	if !ok {
+		return nil, fmt.Errorf("Cannot retrieve document. Invalid document type: %s", documentType)
+	}
+
+	document, ok := link.DocumentMap[id]
+	if !ok {
+		return nil, fmt.Errorf("Cannot retrieve document. Document ID not found: %s:%s", link.Label, id)
+	}
+
+	for i := 0; i < maxParentCount; i++ {
+		link = link.ParentLink
+		if link == nil {
+			break
+		}
+		document, ok = link.DocumentMap[document.ParentID]
+		if !ok {
+			return nil, fmt.Errorf("Cannot retrieve parent document. Document ID not found: %s:%s", link.Label, document.ParentID)
+		}
+		parents[i] = document
+	}
+	return parents, nil
 }
 
 func (s store) UpdateDocument(documentType Label, document Document) error {

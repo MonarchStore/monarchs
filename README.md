@@ -100,11 +100,14 @@ POST localhost:6789/locations/cities/nyc?parent=ny
 PUT localhost:6789/locations/cities/nyc
 {"name": "New York City", "stats": {"population_in_millions": 8.491}}
 
-# Read "country", with all the "states" and "cities"
+# Read a "country", with all its "states" and "cities"
 GET localhost:6789/locations/countries/usa?depth=2
 
-# Read "country", without any "states"
-GET localhost:6789/locations/countries/usa?depth=0
+# Read a "city", and its parent "state" and "country"
+GET localhost:6789/locations/cities/nyc?depth=0&parents=2
+
+# Read the entire hierarchy root
+GET localhost:6789/locations/root/root?depth=4
 
 # Read the entire hierarchy root
 GET localhost:6789/locations/root/root?depth=4
