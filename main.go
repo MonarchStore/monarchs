@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"bitbucket.org/enticusa/kingdb/server"
+	"github.com/arturom/monarchs/server"
 )
 
 func main() {

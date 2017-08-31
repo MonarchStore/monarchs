@@ -1,4 +1,4 @@
-# KingDB #
+# MonarchStore #
 A hierarchical, NoSQL, in-memory data store with a RESTful API.
 
 ## What is a hierarchical data store? ##
@@ -33,29 +33,29 @@ Key-Value stores, such as Redis or Riak KV, provide the fastest reads when all d
 #### How does it compare against a document store? ####
 Document stores, such as MongoDB or Elasticsearch, need to make multiple round trips to get the child entities. The alternative is to store all the data into a single, large, highly-nested document, which is inneficient to fetch and update, and so large that it becomes too difficult to handle.
 
-## KingDB Features ##
+## MonarchStor Features ##
 - Queries can return any entity in any of the hierarchy levels.
 - Queries can specify the depth level of child entities to reduce the amount of data returned.
 - Entities may have custom properties.
 - Each entity can be updated independently of it's parent or child entities.
 - In memory storage provides speedy reads and writes atomically.
-- The RESTful HTTP interface combines the application relational logic and the data store. When there is no additional domain logic to add, putting KingDB behind a protected proxy makes writing REST APIs unnecessary. Application architectures can be reduced from a database server + application server to a KingDB single server.
+- The RESTful HTTP interface combines the application relational logic and the data store. When there is no additional domain logic to add, putting MonarchStore behind a protected proxy makes writing REST APIs unnecessary. Application architectures can be reduced from a database server + application server to a MonarchStore single server.
 
-## Setting up KingDB ##
+## Setting up MonarchStore ##
 
 #### Prerequisites ####
 Go > 1.8
 
 #### Compiling into a binary ####
 ```
-go get bitbucket.org/enticusa/kingdb
-cd $GOPATH/bitbucket.org/enticusa/kingdb
+go get github.com/arturom/monarchs
+cd $GOPATH/github.com/arturom/monarchs
 go install
 ```
 
 #### Running the database ####
 ```
-$GOPATH/bin/kingdb
+$GOPATH/bin/monarchs
 ```
 
 #### CLI Options ###

@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	ds "bitbucket.org/enticusa/kingdb/docstore"
-	"bitbucket.org/enticusa/kingdb/serialization"
+	ds "github.com/arturom/monarchs/docstore"
+	"github.com/arturom/monarchs/serialization"
 )
 
 func parsePath(p string) parsedPath {

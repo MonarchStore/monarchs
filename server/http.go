@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	ds "bitbucket.org/enticusa/kingdb/docstore"
+	ds "github.com/arturom/monarchs/docstore"
 )
 
 type HTTPServer interface {

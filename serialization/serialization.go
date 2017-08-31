@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"sort"
 
-	ds "bitbucket.org/enticusa/kingdb/docstore"
+	ds "github.com/arturom/monarchs/docstore"
 )
 
 type ReadModel struct {
 	ID       ds.ID          `json:"id"`
-	ParentID ds.ID          `json:"parent_id"`
 	Values   ds.KeyValueMap `json:"values"`
 	Children ReadModelSlice `json:"children"`
 	Parents  []ReadModel    `json:"parents,omitempty"`
@@ -47,7 +46,6 @@ func mapDocumentToReadModel(d *ds.Document, depth int) ReadModel {
 
 	return ReadModel{
 		ID:       d.ID,
-		ParentID: d.ParentID,
 		Values:   d.KeyValueFields,
 		Children: children,
 	}
