@@ -33,7 +33,7 @@ Key-Value stores, such as Redis or Riak KV, provide the fastest reads when all d
 #### How does it compare against a document store? ####
 Document stores, such as MongoDB or Elasticsearch, need to make multiple round trips to get the child entities. The alternative is to store all the data into a single, large, highly-nested document, which is inneficient to fetch and update, and so large that it becomes too difficult to handle.
 
-## MonarchStor Features ##
+## MonarchStore Features ##
 - Queries can return any entity in any of the hierarchy levels.
 - Queries can specify the depth level of child entities to reduce the amount of data returned.
 - Entities may have custom properties.
