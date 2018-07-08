@@ -46,13 +46,21 @@ func (s *httpServer) dataHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch signature {
 	case "GET3":
+		s.mutex.RLock()
 		s.readDocument(w, r, path)
+		s.mutex.RUnlock()
 	case "POST3":
+		s.mutex.Lock()
 		s.createDocument(w, r, path)
+		s.mutex.Unlock()
 	case "PUT3":
+		s.mutex.Lock()
 		s.updateDocument(w, r, path)
+		s.mutex.Unlock()
 	case "DELETE3":
+		s.mutex.Lock()
 		s.deleteDocument(w, r, path)
+		s.mutex.Unlock()
 	case "GET1":
 		s.readSchema(w, r, path)
 	case "POST1":
