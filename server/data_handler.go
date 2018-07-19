@@ -142,7 +142,7 @@ func (s *httpServer) readDocument(w http.ResponseWriter, r *http.Request, path p
 	document, err := store.ReadDocument(path.documentType, path.documentID)
 	if err != nil {
 		errMsg := fmt.Sprintf("Error while reading document: %s", err)
-		http.Error(w, errMsg, http.StatusInternalServerError)
+		http.Error(w, errMsg, http.StatusNotFound)
 		return
 	}
 
@@ -156,7 +156,7 @@ func (s *httpServer) readDocument(w http.ResponseWriter, r *http.Request, path p
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	w.Write(json)
 }
 
