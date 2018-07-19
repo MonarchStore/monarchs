@@ -58,6 +58,11 @@ go install
 $GOPATH/bin/monarchs
 ```
 
+#### Environment ###
+```
+LISTEN_PORT=":6789"
+```
+
 #### CLI Options ###
 ```
   -addr string

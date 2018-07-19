@@ -3,7 +3,8 @@ package main
 import (
 	"flag"
 	"log"
-
+	"os"
+	
 	"github.com/arturom/monarchs/server"
 )
 
@@ -21,7 +22,12 @@ type cliOpts struct {
 }
 
 func readCLIOptions() cliOpts {
-	addrPtr := flag.String("addr", ":6789", "The binding address")
+	default_port := ":6789"
+	if port, ok := os.LookupEnv("LISTEN_PORT"); ok {
+		default_port = port
+	}
+
+	addrPtr := flag.String("addr", default_port, "The binding address")
 	flag.Parse()
 
 	return cliOpts{
