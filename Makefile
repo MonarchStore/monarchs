@@ -1,5 +1,5 @@
 .PHONY:
-REPO=cmattoon
+REPO=arturom
 IMAGE=monarchs
 TAG := $(shell git log -1 --pretty=format:"%h")
 
@@ -18,6 +18,9 @@ build:
 container:
 	docker build -t $(DOCKER_IMAGE) $(DOCKERFILE_DIR) --build-arg commit=$(TAG)
 	docker tag $(DOCKER_IMAGE) $(LATEST_IMAGE)
+
+.PHONY: push-container
+push-container: container
 	docker push $(DOCKER_IMAGE)
 	docker push $(LATEST_IMAGE)
 
