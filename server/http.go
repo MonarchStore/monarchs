@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"net/http"
 	"sync"
 
@@ -8,7 +9,8 @@ import (
 )
 
 type HTTPServer interface {
-	Listen(addr string) error
+	HandleSigterm(srv *http.Server)
+	Listen(addr string, stopChan <-chan struct{}) error
 }
 
 func NewHttpServer() HTTPServer {
@@ -23,7 +25,38 @@ type httpServer struct {
 	mutex    sync.RWMutex
 }
 
-func (s *httpServer) Listen(addr string) error {
+// An opportunity to gracefully shutdown
+func (s *httpServer) HandleSigterm(srv *http.Server) {
+	log.Println("Goodbye")
+	srv.Shutdown(nil)
+}
+
+func (s *httpServer) Listen(addr string, stopChan <-chan struct{}) (err error) {
+	// Init http.Server
+	srv := &http.Server{Addr: addr}
+
+	// Set routes
 	http.HandleFunc("/", s.dataHandler)
-	return http.ListenAndServe(addr, Logger(http.DefaultServeMux))
+	http.HandleFunc("/healthz", s.healthCheck)
+	http.HandleFunc("/metricz", s.doMetrics)
+
+	// Shutdown the server when this function (s.Run) returns
+	defer s.HandleSigterm(srv)
+
+	// Go ListenAndServe asynchronously
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Printf("HTTPServer.ListenAndServe Error: %s", err)
+		}
+	}()
+
+	// Wait for a stopChan message
+	for {
+		select {
+		case <-stopChan:
+			log.Println("Caught SIGTERM")
+			return
+		}
+	}
+	return	
 }
