@@ -10,6 +10,11 @@ DOCKERFILE_DIR=.
 
 CHART_DIR=chart/monarchs
 
+RELEASE_NAME ?= monarchs
+RELEASE_NAMESPACE ?= monarchs
+DOCKER_TAG ?= latest
+
+
 .PHONY: build
 build:
 	go build .
@@ -28,3 +33,9 @@ push-container: container
 chart:
 	helm lint $(CHART_DIR)
 
+.PHONY: install-chart
+install-chart:
+	helm upgrade --install $(RELEASE_NAME) \
+		--namespace $(RELEASE_NAMESPACE) \
+		--set image.tag=$(DOCKER_TAG) \
+		$(CHART_DIR)
