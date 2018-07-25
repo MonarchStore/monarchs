@@ -1,0 +1,23 @@
+===================================================================
+  __  __                            _      _____ _                 
+ |  \/  |                          | |    / ____| |                
+ | \  / | ___  _ __   __ _ _ __ ___| |__ | (___ | |_ ___  _ __ ___ 
+ | |\/| |/ _ \| '_ \ / _` | '__/ __| '_ \ \___ \| __/ _ \| '__/ _ \
+ | |  | | (_) | | | | (_| | | | (__| | | |____) | || (_) | | |  __/
+ |_|  |_|\___/|_| |_|\__,_|_|  \___|_| |_|_____/ \__\___/|_|  \___|
+===================================================================
+
+ Chart Version : {{ .Chart.Version }}
+ Docker Image  : {{ .Values.image.repository }}:{{ .Values.image.tag }}
+
+-------------------------------------------------------------------
+
+You should get an "OK" response at the following URL(s):
+
+ - (with kubectl proxy) http://localhost:8001/api/v1/namespaces/{{ .Release.Namespace }}/services/{{ template "monarchs.fullname" . }}:{{ .Values.service.externalPort }}/proxy/healthz
+{{- if (.Values.external.url) }}
+ - http://{{ .Values.external.url }}:{{ .Values.service.externalPort }}
+{{- end }}
+{{- if (.Values.ingress.url) }}
+ - http://{{ .Values.ingress.url }}/healthz
+{{- end }}

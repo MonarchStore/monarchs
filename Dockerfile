@@ -12,12 +12,12 @@ LABEL org.label-schema.vcs-url "https://github.com/arturom/monarchs"
 
 RUN apk add --update --no-cache git
 
-WORKDIR /go/src/app
+WORKDIR /go/src/github.com/arturom/monarchs
 
 COPY . .
 
-RUN go get -d -v ./...
+RUN go build .
 
 RUN go install -v ./...
 
-ENTRYPOINT ["/go/bin/app"]
+ENTRYPOINT ["/go/bin/monarchs"]

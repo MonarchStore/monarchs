@@ -1,0 +1,19 @@
+{{- if (.Values.ingress.url) }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "monarchs.fullname" . }}
+  labels:
+    app: {{ template "monarchs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.url }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ template "monarchs.fullname" . }}
+              servicePort: {{ .Values.service.externalPort }}
+{{- end }}

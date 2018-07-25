@@ -1,0 +1,31 @@
+image:
+  repository: cmattoon/monarchs
+  tag: latest
+  pullPolicy: Always
+service:
+  name: monarchs
+  type: ClusterIP
+  externalPort: 6789
+  internalPort: 6789
+  extra_annotations: {}
+
+## To expose your service via ingress-nginx, simply provide a URL here
+# Example "monarchs.mycluster.example.org"
+ingress:
+  url: ''
+
+## To expose your service with external-dns, simply provide a URL here
+# Example: "monarchs.example.org"
+external:
+  url: ''
+
+## ELB Configuration
+#  - To create a non-https public ELB, you can either set service.type=LoadBalancer,
+#    or set elb.type=external.
+#  - To create a public HTTPS ELB, set elb.type=external, and provide elb.ssl_cert
+#  - To create an internal HTTPS ELB, set elb.type=internal, and provide elb.ssl_cert
+#
+# Where elb.ssl_cert is the full ARN of an AWS SSL Certificate
+elb:
+  type: none
+  ssl_cert: ""
