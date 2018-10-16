@@ -13,7 +13,7 @@ service:
 # Example "monarchs.mycluster.example.org"
 ingress:
   url: ''
-
+  class: nginx
 ## To expose your service with external-dns, simply provide a URL here
 # Example: "monarchs.example.org"
 external:
