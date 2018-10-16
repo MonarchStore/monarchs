@@ -57,6 +57,7 @@ Values
 | service.internalPort      | int    | 6789             | Probably shouldn't change this                                             |
 | service.extra_annotations | map    | {}               | Extra annotations for the service                                          |
 | ingress.url               | string | ''               | The host for ingress-nginx, if desired                                     |
+| ingress.class             | string | nginx            | The Kubernetes Ingress class                                               |
 | external.url              | string | ''               | The hostname for external-dns, if desired                                  |
 | elb.type                  | string | none             | If ELB is desired, set to 'internal' or 'external'. Overrides service.type |
 | elb.ssl_cert              | strng  | none             | The ARN of the AWS SSL/TLS Certificate                                     |
