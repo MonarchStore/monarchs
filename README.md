@@ -1,4 +1,8 @@
 # MonarchStore #
+
+[![Build Status](https://travis-ci.org/arturom/monarchs.svg?branch=master)](https://travis-ci.org/arturom/monarchs)
+
+
 A hierarchical, NoSQL, in-memory data store with a RESTful API.
 
 ## What is a hierarchical data store? ##
