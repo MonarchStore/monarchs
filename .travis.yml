@@ -1,0 +1,40 @@
+sudo: required
+language: go
+go:
+  - '1.10'
+before_install:
+  - go get -t -v ./...
+jobs:
+  include:
+    - stage: docker-latest
+      script:
+        - docker build -t cmattoon/monarchs:latest .
+        - echo "$DOCKER_PASSWD" | docker login --username "$DOCKER_USER" --password-stdin
+        - docker push cmattoon/monarchs:latest
+        
+    - stage: docker-branch
+      script:
+        - docker build -t cmattoon/monarchs:$TRAVIS_BRANCH .
+        - echo "$DOCKER_PASSWD" | docker login --username "$DOCKER_USER" --password-stdin
+        - docker push cmattoon/monarchs:$TRAVIS_BRANCH
+
+    - stage: docker-pr
+      script:
+        - docker build -t cmattoon/monarchs:PR-$TRAVIS_PULL_REQUEST .
+        - echo "$DOCKER_PASSWD" | docker login --username "$DOCKER_USER" --password-stdin
+        - docker push cmattoon/monarchs:PR-$TRAVIS_PULL_REQUEST
+
+branches:
+  only:
+    - build
+    - "/^v.*$/"
+stages:
+  - name: docker-latest
+    if: branch == build AND type != pull_request
+
+  - name: docker-branch
+    if: branch != build AND type != pull_request
+
+  - name: docker-pr
+    if: type == pull_request
+
