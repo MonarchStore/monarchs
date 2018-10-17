@@ -1,6 +1,9 @@
 # MonarchStore #
 
-[![Build Status](https://travis-ci.org/arturom/monarchs.svg?branch=master)](https://travis-ci.org/arturom/monarchs)
+[![Build Status](https://travis-ci.org/MonarchStore/monarchs.svg?branch=master)](https://travis-ci.org/MonarchStore/monarchs)
+![GitHub tag](https://img.shields.io/github/tag/MonarchStore/monarchs.svg)
+![Docker Pulls](https://img.shields.io/docker/pulls/monarchstore/monarchs.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/MonarchStore/monarchs)](https://goreportcard.com/report/github.com/MonarchStore/monarchs)
 
 
 A hierarchical, NoSQL, in-memory data store with a RESTful API.
