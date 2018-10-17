@@ -58,5 +58,5 @@ func (s *httpServer) Listen(addr string, stopChan <-chan struct{}) (err error) {
 			return
 		}
 	}
-	return	
+	return
 }
