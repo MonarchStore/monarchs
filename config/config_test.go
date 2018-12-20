@@ -9,11 +9,6 @@ import (
 )
 
 var (
-	minimalConfig = &Config{
-		ListenAddress: "0.0.0.0",
-		ListenPort:    6789,
-		LogLevel:      "debug",
-	}
 	overriddenConfig = &Config{
 		ListenAddress: "255.255.255.255",
 		ListenPort:    9999,
@@ -32,7 +27,7 @@ func TestParseFlags(t *testing.T) {
 			title:    "default config with minimal flags",
 			args:     []string{},
 			envVars:  map[string]string{},
-			expected: minimalConfig,
+			expected: defaultConfig,
 		},
 		{
 			title: "override everything with flags",
