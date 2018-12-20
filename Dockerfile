@@ -1,4 +1,4 @@
-FROM library/golang:1.6 as builder
+FROM library/golang:1.9 as builder
 
 ARG commit="none"
 
@@ -6,21 +6,23 @@ WORKDIR /go/src/github.com/MonarchStore/monarchs
 
 COPY . .
 
+RUN rm -rf vendor
+
 RUN make dep
+
 RUN make test
+
 RUN make build
 
 
-#RUN go test -v -race $(go list ./... | grep -v /vendor/)
-#RUN go build -v .
-
-
-FROM library/golang:1.6-alpine
+FROM library/golang:1.9-alpine
 COPY --from=builder /go/src/github.com/MonarchStore/monarchs /go/bin/monarchs
 
 ENV MONARCHS_ADDR "0.0.0.0"
 ENV MONARCHS_PORT "6789"
-ENV MONARCHS_LOG_LEVEL "info"
+ENV MONARCHS_LOG_FORMAT "ascii"
+ENV MONARCHS_LOG_LEVEL "debug"
+ENV MONARCHS_LOG_OUTPUT "stderr"
 
 LABEL org.label-schema.schema-version "1.0.0"
 LABEL org.label-schema.version $commit

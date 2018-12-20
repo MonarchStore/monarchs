@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/alecthomas/kingpin"
 	log "github.com/sirupsen/logrus"
@@ -19,22 +20,22 @@ var (
 type Config struct {
 	ListenAddress string
 	ListenPort    int
-
-	LogLevel string
+	LogFormat     string
+	LogLevel      string
+	LogOutput     string
 }
 
 var defaultConfig = &Config{
 	ListenAddress: "0.0.0.0",
 	ListenPort:    6789,
+	LogFormat:     "ascii",
 	LogLevel:      "debug",
+	LogOutput:     "stderr",
 }
 
 func NewConfig() *Config {
-	return &Config{
-		ListenAddress: defaultConfig.ListenAddress,
-		ListenPort:    defaultConfig.ListenPort,
-		LogLevel:      defaultConfig.LogLevel,
-	}
+	cfg := Config(*defaultConfig)
+	return &cfg
 }
 
 func NewConfigFromArgs(args []string) *Config {
@@ -68,6 +69,12 @@ func (cfg *Config) ParseFlags(args []string) error {
 	app.Flag("log-level", "The log level (trace|debug|info|warning|error|fatal|panic)").
 		Default(defaultConfig.LogLevel).
 		EnumVar(&cfg.LogLevel, allLogLevelsAsStrings()...)
+	app.Flag("log-output", "The log output. Default: 'stderr' (also: 'stdout')").
+		Default(defaultConfig.LogOutput).
+		StringVar(&cfg.LogOutput)
+	app.Flag("log-format", "The log format (ascii|json)").
+		Default(defaultConfig.LogFormat).
+		StringVar(&cfg.LogFormat)
 
 	app.Parse(args)
 	return nil
@@ -81,6 +88,29 @@ func (cfg *Config) GetListenPort() string {
 // Returns 'hostname:port'
 func (cfg *Config) GetListenAddress() string {
 	return cfg.ListenAddress + cfg.GetListenPort()
+}
+
+func (cfg *Config) InitLogging() {
+	// Set Log Level
+	lvl, err := log.ParseLevel(cfg.LogLevel)
+	if err != nil {
+		lvl, _ = log.ParseLevel("debug")
+	}
+	log.SetLevel(lvl)
+
+	// Set Log Output
+	// Can be any io.Writer
+	if cfg.LogOutput == "stdout" {
+		log.SetOutput(os.Stdout)
+	} else {
+		log.SetOutput(os.Stderr)
+	}
+
+	// Set JSONFormatter, if desired
+	if cfg.LogFormat == "json" {
+		log.SetFormatter(&log.JSONFormatter{})
+	}
+	log.Printf("Logging Configured! [%s]\n", cfg.LogLevel)
 }
 
 // Get strings from the log package itself

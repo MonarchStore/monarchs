@@ -12,6 +12,7 @@ import (
 
 func main() {
 	cfg := config.NewConfigFromArgs(os.Args[1:])
+	cfg.InitLogging()
 
 	stopChan := make(chan struct{}, 1)
 	go handleSigterm(stopChan)

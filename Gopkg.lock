@@ -29,19 +29,6 @@
   revision = "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a"
 
 [[projects]]
-  digest = "1:76d12933790f901c6aa5a38b738cd89ad4b8419145479047015ef6d6304c5fd3"
-  name = "github.com/MonarchStore/monarchs"
-  packages = [
-    "config",
-    "docstore",
-    "serialization",
-    "server",
-  ]
-  pruneopts = "UT"
-  revision = "c210d2abc1da7471588dc3367b8402421c6c028d"
-  version = "0.1.0"
-
-[[projects]]
   digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
@@ -108,11 +95,8 @@
   analyzer-version = 1
   input-imports = [
     "github.com/alecthomas/kingpin",
-    "github.com/MonarchStore/monarchs/config",
-    "github.com/MonarchStore/monarchs/docstore",
-    "github.com/MonarchStore/monarchs/serialization",
-    "github.com/MonarchStore/monarchs/server",
     "github.com/sirupsen/logrus",
+    "github.com/stretchr/testify/assert",
     "github.com/stretchr/testify/require",
   ]
   solver-name = "gps-cdcl"

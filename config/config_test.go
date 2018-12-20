@@ -12,7 +12,9 @@ var (
 	overriddenConfig = &Config{
 		ListenAddress: "255.255.255.255",
 		ListenPort:    9999,
+		LogFormat:     "json",
 		LogLevel:      "error",
+		LogOutput:     "stdout",
 	}
 )
 
@@ -34,7 +36,9 @@ func TestParseFlags(t *testing.T) {
 			args: []string{
 				"--addr=255.255.255.255",
 				"--port=9999",
+				"--log-format=json",
 				"--log-level=error",
+				"--log-output=stdout",
 			},
 			envVars:  map[string]string{},
 			expected: overriddenConfig,
@@ -43,9 +47,11 @@ func TestParseFlags(t *testing.T) {
 			title: "override everything with env vars",
 			args:  []string{},
 			envVars: map[string]string{
-				"MONARCHS_ADDR":      "255.255.255.255",
-				"MONARCHS_PORT":      "9999",
-				"MONARCHS_LOG_LEVEL": "error",
+				"MONARCHS_ADDR":       "255.255.255.255",
+				"MONARCHS_PORT":       "9999",
+				"MONARCHS_LOG_FORMAT": "json",
+				"MONARCHS_LOG_LEVEL":  "error",
+				"MONARCHS_LOG_OUTPUT": "stdout",
 			},
 			expected: overriddenConfig,
 		},
