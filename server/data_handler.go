@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	ds "github.com/arturom/monarchs/docstore"
-	"github.com/arturom/monarchs/serialization"
+	ds "github.com/MonarchStore/monarchs/docstore"
+	"github.com/MonarchStore/monarchs/serialization"
 )
 
 func parsePath(p string) parsedPath {

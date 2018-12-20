@@ -1,8 +1,9 @@
 package server
 
 import (
-	"log"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func Logger(handler http.Handler) http.Handler {

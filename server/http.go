@@ -1,11 +1,11 @@
 package server
 
 import (
-	"log"
 	"net/http"
 	"sync"
 
-	ds "github.com/arturom/monarchs/docstore"
+	ds "github.com/MonarchStore/monarchs/docstore"
+	log "github.com/sirupsen/logrus"
 )
 
 type HTTPServer interface {
@@ -14,6 +14,7 @@ type HTTPServer interface {
 }
 
 func NewHttpServer() HTTPServer {
+	log.Trace("Creating new HTTP Server")
 	return &httpServer{
 		storeMap: make(ds.StoreMap),
 		mutex:    sync.RWMutex{},
@@ -34,17 +35,20 @@ func (s *httpServer) HandleSigterm(srv *http.Server) {
 func (s *httpServer) Listen(addr string, stopChan <-chan struct{}) (err error) {
 	// Init http.Server
 	srv := &http.Server{Addr: addr}
+	log.Debug("Initialized HTTP server")
 
 	// Set routes
 	http.HandleFunc("/", s.dataHandler)
 	http.HandleFunc("/healthz", s.healthCheck)
 	http.HandleFunc("/metricz", s.doMetrics)
+	log.Debug("Registered routes")
 
 	// Shutdown the server when this function (s.Run) returns
 	defer s.HandleSigterm(srv)
 
 	// Go ListenAndServe asynchronously
 	go func() {
+		log.Println("[ListenAndServe]")
 		if err := srv.ListenAndServe(); err != nil {
 			log.Printf("HTTPServer.ListenAndServe Error: %s", err)
 		}
@@ -54,9 +58,9 @@ func (s *httpServer) Listen(addr string, stopChan <-chan struct{}) (err error) {
 	for {
 		select {
 		case <-stopChan:
-			log.Println("Caught SIGTERM")
+			log.Println("Caught SIGTERM. Exiting...")
 			return
 		}
 	}
-	return	
+	return
 }

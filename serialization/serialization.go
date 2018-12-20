@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"sort"
 
-	ds "github.com/arturom/monarchs/docstore"
+	ds "github.com/MonarchStore/monarchs/docstore"
 )
 
 type ReadModel struct {
