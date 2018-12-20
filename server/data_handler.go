@@ -11,6 +11,7 @@ import (
 
 	ds "github.com/MonarchStore/monarchs/docstore"
 	"github.com/MonarchStore/monarchs/serialization"
+	log "github.com/sirupsen/logrus"
 )
 
 func parsePath(p string) parsedPath {
@@ -43,6 +44,10 @@ type parsedPath struct {
 func (s *httpServer) dataHandler(w http.ResponseWriter, r *http.Request) {
 	path := parsePath(strings.Trim(r.URL.Path, "/"))
 	signature := fmt.Sprintf("%s%d", r.Method, path.count)
+	log.WithFields(log.Fields{
+		"path":      path,
+		"signature": signature,
+	}).Info("dataHandler")
 
 	switch signature {
 	case "GET3":
