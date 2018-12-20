@@ -51,7 +51,7 @@ Document stores, such as MongoDB or Elasticsearch, need to make multiple round t
 ## Setting up MonarchStore ##
 
 #### Prerequisites ####
-Go > 1.8
+Go >= 1.9
 
 #### Compiling into a binary ####
 ```
@@ -65,16 +65,16 @@ go install
 $GOPATH/bin/monarchs
 ```
 
-#### Environment ###
-```
-LISTEN_PORT=":6789"
-```
+#### Flags/Environment ###
 
-#### CLI Options ###
-```
-  -addr string
-        The binding address (default ":6789")
-```
+| CLI Flag       | Variable            | Default   | Description |
+|----------------|---------------------|-----------|-------------|
+| `--addr`       | MONARCHS_ADDR       | `0.0.0.0` |             |
+| `--port`       | MONARCHS_PORT       | `6789`    |             |
+| `--log-format` | MONARCHS_LOG_FORMAT | `ascii`   |             |
+| `--log-level`  | MONARCHS_LOG_LEVEL  | `debug`   |             |
+| `--log-output` | MONARCHS_LOG_OUTPUT | `stderr`  |             |
+
 
 ## REST API ##
 
