@@ -26,11 +26,15 @@ type Config struct {
 var defaultConfig = &Config{
 	ListenAddress: "0.0.0.0",
 	ListenPort:    6789,
-	LogLevel:      "error",
+	LogLevel:      "debug",
 }
 
 func NewConfig() *Config {
-	return &Config{}
+	return &Config{
+		ListenAddress: defaultConfig.ListenAddress,
+		ListenPort:    defaultConfig.ListenPort,
+		LogLevel:      defaultConfig.LogLevel,
+	}
 }
 
 func NewConfigFromArgs(args []string) *Config {

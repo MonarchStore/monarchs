@@ -12,10 +12,12 @@ var (
 	minimalConfig = &Config{
 		ListenAddress: "0.0.0.0",
 		ListenPort:    6789,
+		LogLevel:      "debug",
 	}
 	overriddenConfig = &Config{
 		ListenAddress: "255.255.255.255",
 		ListenPort:    9999,
+		LogLevel:      "error",
 	}
 )
 
@@ -37,6 +39,7 @@ func TestParseFlags(t *testing.T) {
 			args: []string{
 				"--addr=255.255.255.255",
 				"--port=9999",
+				"--log-level=error",
 			},
 			envVars:  map[string]string{},
 			expected: overriddenConfig,
@@ -45,9 +48,11 @@ func TestParseFlags(t *testing.T) {
 			title: "override everything with env vars",
 			args:  []string{},
 			envVars: map[string]string{
-				"MONARCHS_ADDR": "255.255.255.255",
-				"MONARCHS_PORT": "9999",
+				"MONARCHS_ADDR":      "255.255.255.255",
+				"MONARCHS_PORT":      "9999",
+				"MONARCHS_LOG_LEVEL": "error",
 			},
+			expected: overriddenConfig,
 		},
 	} {
 		t.Run(ti.title, func(t *testing.T) {
@@ -61,13 +66,15 @@ func TestParseFlags(t *testing.T) {
 	}
 }
 
-func setEnv(t *testing.T, env map[string]string) (env2 map[string]string) {
+func setEnv(t *testing.T, env map[string]string) map[string]string {
+	env2 := map[string]string{}
+
 	for k, v := range env {
 		env2[k] = os.Getenv(k)
 		require.NoError(t, os.Setenv(k, v))
 	}
 
-	return
+	return env2
 }
 
 func restoreEnv(t *testing.T, env map[string]string) {
