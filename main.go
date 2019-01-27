@@ -6,8 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/arturom/monarchs/config"
-	"github.com/arturom/monarchs/server"
+	"github.com/MonarchStore/monarchs/config"
+	"github.com/MonarchStore/monarchs/server"
 )
 
 func main() {

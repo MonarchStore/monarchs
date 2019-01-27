@@ -8,11 +8,11 @@ LABEL org.label-schema.schema-version "1.0.0"
 LABEL org.label-schema.version $commit
 LABEL org.label-schema.name "monarchs"
 LABEL org.label-schema.description "A hierarchial, NoSQL, in-memory data store with a RESTful API"
-LABEL org.label-schema.vcs-url "https://github.com/arturom/monarchs"
+LABEL org.label-schema.vcs-url "https://github.com/MonarchStore/monarchs"
 
 RUN apk add --update --no-cache git
 
-WORKDIR /go/src/github.com/arturom/monarchs
+WORKDIR /go/src/github.com/MonarchStore/monarchs
 
 COPY . .
 

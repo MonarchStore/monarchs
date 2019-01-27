@@ -1,7 +1,7 @@
 .PHONY:
-REPO=arturom
-IMAGE=monarchs
-TAG := $(shell git log -1 --pretty=format:"%h")
+REPO   = arturom
+IMAGE  = monarchs
+TAG   := $(shell git log -1 --pretty=format:"%h")
 
 DOCKER_IMAGE=$(REPO)/$(IMAGE):$(TAG)
 LATEST_IMAGE=$(REPO)/$(IMAGE):latest
