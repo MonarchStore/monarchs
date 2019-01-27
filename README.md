@@ -55,8 +55,8 @@ Go > 1.8
 
 #### Compiling into a binary ####
 ```
-go get github.com/arturom/monarchs
-cd $GOPATH/github.com/arturom/monarchs
+go get github.com/MonarchStore/monarchs
+cd $GOPATH/github.com/MonarchStore/monarchs
 go install
 ```
 

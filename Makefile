@@ -1,5 +1,5 @@
 .PHONY:
-REPO   = arturom
+REPO   = monarchstore
 IMAGE  = monarchs
 TAG   := $(shell git log -1 --pretty=format:"%h")
 
