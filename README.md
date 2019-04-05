@@ -1,4 +1,4 @@
-# MonarchStore #
+![MonarchStore Logo](/logo.png)
 
 [![Build Status](https://travis-ci.org/MonarchStore/monarchs.svg?branch=master)](https://travis-ci.org/MonarchStore/monarchs)
 ![GitHub tag](https://img.shields.io/github/tag/MonarchStore/monarchs.svg)
