@@ -81,52 +81,49 @@ LISTEN_PORT=":6789"
 #### Sample Usage ####
 Below are sample REST CRUD actions for a registry of `continents` -> `countries` -> `states` -> `cities`. These actions are available as a [Postman collection](demo_postman_collection.json).
 ```
-# Create the "locations" schema
+# Define the "locations" hierarchy
 POST localhost:6789/locations
 ["continents", "countries", "states", "cities"]
 
-# Read the "locations" schema we just created
+# View the "locations" hiearchy we just created
 GET localhost:6789/locations
 
-# Create a "continent" under the "root"
+# Create a "continent" document under the "root" document
 POST localhost:6789/locations/continents/north_america?parent=root
 {"name": "North America"}
 
-# Create a "country"
+# Create a "country" document
 POST localhost:6789/locations/countries/usa?parent=north_america
 {"name": "United States of America", "capital": "Washington, DC", "code": "usa"}
 
-# Create a "state"
+# Create a "state" document
 POST localhost:6789/locations/states/ny?parent=usa
 {"name": "New York", "abbr": "NY"}
 
-# Create another "state"
+# Create another "state" document
 POST localhost:6789/locations/states/ca?parent=usa
 {"name": "California", "abbr": "CA"}
 
-# Create a "city"
+# Create a "city" document
 POST localhost:6789/locations/cities/nyc?parent=ny
 {"name": "New York City"}
 
-# Update a "city"
+# Update a "city" document
 PUT localhost:6789/locations/cities/nyc
 {"name": "New York City", "stats": {"population_in_millions": 8.491}}
 
-# Read a "country", with all its "states" and "cities"
+# Read a "country" document, with all of its "state" documents and "city" documents
 GET localhost:6789/locations/countries/usa?depth=2
 
-# Read a "city", and its parent "state" and "country"
+# Read a "city" document, and the parent "state" document, and the grandparent "country" document
 GET localhost:6789/locations/cities/nyc?depth=0&parents=2
 
-# Read the entire hierarchy root
+# Read the "root" document and all the elements in the hierarchy
 GET localhost:6789/locations/root/root?depth=4
 
-# Read the entire hierarchy root
-GET localhost:6789/locations/root/root?depth=4
-
-# Delete a "country". All child "states" and "cities" are deleted as well
+# Delete a "country" document. All children "state" documents and grandchilden "city" documents are deleted as well
 DELETE localhost:6789/locations/countries/usa
 
-# Delete the "locations" schema
+# Delete the "locations" hierarchy
 DELETE localhost:6789/locations
 ```
