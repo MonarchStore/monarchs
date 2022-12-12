@@ -80,50 +80,101 @@ LISTEN_PORT=":6789"
 
 #### Sample Usage ####
 Below are sample REST CRUD actions for a registry of `continents` -> `countries` -> `states` -> `cities`. These actions are available as a [Postman collection](demo_postman_collection.json).
+
+##### Define the "locations" hierarchy
 ```
-# Define the "locations" hierarchy
 POST localhost:6789/locations
+```
+```json
 ["continents", "countries", "states", "cities"]
+```
 
-# View the "locations" hiearchy we just created
+
+##### View the "locations" hiearchy we just created
+```
 GET localhost:6789/locations
+```
 
-# Create a "continent" document under the "root" document
+
+##### Create a "continent" document under the "root" document
+```
 POST localhost:6789/locations/continents/north_america?parent=root
+```
+```json
 {"name": "North America"}
+```
 
-# Create a "country" document
+
+##### Create a "country" document
+```
 POST localhost:6789/locations/countries/usa?parent=north_america
+```
+```json
 {"name": "United States of America", "capital": "Washington, DC", "code": "usa"}
+```
 
-# Create a "state" document
+
+##### Create a "state" document
+```
 POST localhost:6789/locations/states/ny?parent=usa
+```
+```json
 {"name": "New York", "abbr": "NY"}
+```
 
-# Create another "state" document
+
+##### Create another "state" document
+```
 POST localhost:6789/locations/states/ca?parent=usa
+```
+```json
 {"name": "California", "abbr": "CA"}
+```
 
-# Create a "city" document
+
+##### Create a "city" document
+```
 POST localhost:6789/locations/cities/nyc?parent=ny
+```
+```json
 {"name": "New York City"}
+```
 
-# Update a "city" document
+
+##### Update a "city" document
+```
 PUT localhost:6789/locations/cities/nyc
+```
+```json
 {"name": "New York City", "stats": {"population_in_millions": 8.491}}
+```
 
-# Read a "country" document, with all of its "state" documents and "city" documents
+
+##### Read a "country" document, with all of its "state" documents and "city" documents
+```
 GET localhost:6789/locations/countries/usa?depth=2
+```
 
-# Read a "city" document, and the parent "state" document, and the grandparent "country" document
+
+##### Read a "city" document, and the parent "state" document, and the grandparent "country" document
+```
 GET localhost:6789/locations/cities/nyc?depth=0&parents=2
+```
 
-# Read the "root" document and all the elements in the hierarchy
+
+##### Read the "root" document and all the elements in the hierarchy
+```
 GET localhost:6789/locations/root/root?depth=4
+```
 
-# Delete a "country" document. All children "state" documents and grandchilden "city" documents are deleted as well
+
+##### Delete a "country" document. All children "state" documents and grandchilden "city" documents are deleted as well
+```
 DELETE localhost:6789/locations/countries/usa
+```
 
-# Delete the "locations" hierarchy
+
+##### Delete the "locations" hierarchy
+```
 DELETE localhost:6789/locations
 ```
