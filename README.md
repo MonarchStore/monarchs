@@ -9,35 +9,36 @@
 A hierarchical, NoSQL, in-memory data store with a RESTful API.
 
 ## What is a hierarchical data store? ##
-A hierarchical data store is a service which facilitates CRUD actions on data organized in predefined structures with parent-child relationships.
+A hierarchical data store is a service which facilitates CRUD actions on data organized in a tree structure with a pre-determined depth.
 
 An example domain may define these relationships:
 
 * Continents have countries
-* Countries may have states (or subdivisions)
+* Countries may have states (or provinces)
 * States have cities
 
 The hierarchy is then defined as: `continents` -> `countries` -> `states` -> `cities`
 
-A hierarchical data store enforces all elements to have a parent of the predefined type. In our example domain described above, countries cannot exist without a parent continent, and cities cannot be created as direct children of a country.
+A hierarchical data store enforces rules to maintain the integrity of the tree structure. All elements need have a parent of the pre-defined type. In our example domain described above, countries cannot exist without a parent continent, and cities cannot be created as direct children of a country.
 
-A hierarchical data store makes it simple to query the stored entities and their relationships. To get a country's properties along with the states of that country and the cities in those states, an application issues a query with the `countries` label, the country's ID and the `depth` parameter set to 2.
+A hierarchical data store makes it easy to query the stored entities at any depth and retrieve the parent nodes or the children nodes in a single request. For example, to get a country's properties along with the states of that country and the cities in those states, send a request with the `countries` label, the country's ID and the `depth` parameter set to 2.
 
 ## Why use a hierarchical data store? ##
-Some applications can represent their data model as a hierarchy of entities. A specialized data store can take advantage of optimized data structures, simplify the write and query model, reduce development time, and reduce code complexity.
+Some applications can represent their data model as a hierarchy. A specialized data store can take advantage of optimized data structures for fast reads.
+A hierarchichal data store also provides a simple interface to write and query nodes in the hierarchy. This reduces code complexity and development time.
 
-#### How does it compare against a relational database? ####
+#### How does MonarchStore compare against a relational database? ####
 Relational databases, such as MySQL or PostgreSQL, can be slow, since joins are computed at query time. Moreover, they often require the application to make a trade-off between making multiple round trips or repeating the joinned data when a query involves many tables. A hierarchical database can provide the data of an entire hierarchy with a single request, and keeps references to related entities in memory to bypass the join computation at query time.
 
-#### How does it compare against a graph database? ####
+#### How does MonarchStore compare against a graph database? ####
 Graph databases, such as Neo4J or OrientDB, store hard-links between entities and don't have to compute joins at query time. Yet, graph databases provide too much flexibility. In a graph database, any vertex can be linked to any other vertex of any type and vertices can be created even without a parent vertex to attach to. A hierarchical data store enforces every newly created entity to have a parent unless they are meant to be directly under the root.
 
 Applications querying a graph database must construct a query string. These graph queries, in essence, redundantly redeclare the relationships among the entities in the hierarchy. There is a neglible but existent step for the graph databases to parse this query on every request. Entities in a hierarchical data store can only have one parent and zero or more children, and this information only needs to be provided at creation time.
 
-#### How does it compare against a key-value store? ####
+#### How does MonarchStore compare against a key-value store? ####
 Key-Value stores, such as Redis or Riak KV, provide the fastest reads when all data is stored as a JSON blob, but frequently modifying a deeply nested value is inneficient. The application must pull the entire hierarchy from the root to the leaves, deserialize it, make changes, serialize it, and update the data store. A hierarchical data store allows applications to efficiently create or update a single nested entity without reading all other entities in the hierarchy.
 
-#### How does it compare against a document store? ####
+#### How does MonarchStore compare against a document store? ####
 Document stores, such as MongoDB or Elasticsearch, need to make multiple round trips to get the child entities. The alternative is to store all the data into a single, large, highly-nested document, which is inneficient to fetch and update, and so large that it becomes too difficult to handle.
 
 ## MonarchStore Features ##
