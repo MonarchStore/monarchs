@@ -82,8 +82,8 @@ LISTEN_PORT=":6789"
 Below are sample REST CRUD actions for a registry of `continents` -> `countries` -> `states` -> `cities`. These actions are available as a [Postman collection](demo_postman_collection.json).
 
 ##### Define the "locations" hierarchy
-```
-POST localhost:6789/locations
+```http
+POST http://localhost:6789/locations
 ```
 ```json
 ["continents", "countries", "states", "cities"]
@@ -91,14 +91,14 @@ POST localhost:6789/locations
 
 
 ##### View the "locations" hiearchy we just created
-```
-GET localhost:6789/locations
+```http
+GET http://localhost:6789/locations
 ```
 
 
 ##### Create a "continent" document under the "root" document
-```
-POST localhost:6789/locations/continents/north_america?parent=root
+```http
+POST http://localhost:6789/locations/continents/north_america?parent=root
 ```
 ```json
 {"name": "North America"}
@@ -106,8 +106,8 @@ POST localhost:6789/locations/continents/north_america?parent=root
 
 
 ##### Create a "country" document
-```
-POST localhost:6789/locations/countries/usa?parent=north_america
+```http
+POST http://localhost:6789/locations/countries/usa?parent=north_america
 ```
 ```json
 {"name": "United States of America", "capital": "Washington, DC", "code": "usa"}
@@ -115,8 +115,8 @@ POST localhost:6789/locations/countries/usa?parent=north_america
 
 
 ##### Create a "state" document
-```
-POST localhost:6789/locations/states/ny?parent=usa
+```http
+POST http://localhost:6789/locations/states/ny?parent=usa
 ```
 ```json
 {"name": "New York", "abbr": "NY"}
@@ -124,8 +124,8 @@ POST localhost:6789/locations/states/ny?parent=usa
 
 
 ##### Create another "state" document
-```
-POST localhost:6789/locations/states/ca?parent=usa
+```http
+POST http://localhost:6789/locations/states/ca?parent=usa
 ```
 ```json
 {"name": "California", "abbr": "CA"}
@@ -133,8 +133,8 @@ POST localhost:6789/locations/states/ca?parent=usa
 
 
 ##### Create a "city" document
-```
-POST localhost:6789/locations/cities/nyc?parent=ny
+```http
+POST http://localhost:6789/locations/cities/nyc?parent=ny
 ```
 ```json
 {"name": "New York City"}
@@ -142,8 +142,8 @@ POST localhost:6789/locations/cities/nyc?parent=ny
 
 
 ##### Update a "city" document
-```
-PUT localhost:6789/locations/cities/nyc
+```http
+PUT http://localhost:6789/locations/cities/nyc
 ```
 ```json
 {"name": "New York City", "stats": {"population_in_millions": 8.491}}
@@ -151,30 +151,30 @@ PUT localhost:6789/locations/cities/nyc
 
 
 ##### Read a "country" document, with all of its "state" documents and "city" documents
-```
-GET localhost:6789/locations/countries/usa?depth=2
+```http
+GET http://localhost:6789/locations/countries/usa?depth=2
 ```
 
 
 ##### Read a "city" document, and the parent "state" document, and the grandparent "country" document
-```
-GET localhost:6789/locations/cities/nyc?depth=0&parents=2
+```http
+GET http://localhost:6789/locations/cities/nyc?depth=0&parents=2
 ```
 
 
 ##### Read the "root" document and all the elements in the hierarchy
-```
-GET localhost:6789/locations/root/root?depth=4
+```http
+GET http://localhost:6789/locations/root/root?depth=4
 ```
 
 
 ##### Delete a "country" document. All children "state" documents and grandchilden "city" documents are deleted as well
-```
-DELETE localhost:6789/locations/countries/usa
+```http
+DELETE http://localhost:6789/locations/countries/usa
 ```
 
 
 ##### Delete the "locations" hierarchy
-```
-DELETE localhost:6789/locations
+```http
+DELETE http://localhost:6789/locations
 ```
