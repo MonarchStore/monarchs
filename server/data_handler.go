@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	ds "github.com/arturom/monarchs/docstore"
-	"github.com/arturom/monarchs/serialization"
+	ds "github.com/MonarchStore/monarchs/docstore"
+	"github.com/MonarchStore/monarchs/serialization"
 )
 
 func parsePath(p string) parsedPath {
@@ -147,6 +147,11 @@ func (s *httpServer) readDocument(w http.ResponseWriter, r *http.Request, path p
 	}
 
 	parents, err := store.ReadParentDocuments(path.documentType, path.documentID, parentCount)
+	if err != nil {
+		errMsg := fmt.Sprintf("Error while reading parent document: %s", err)
+		http.Error(w, errMsg, http.StatusNotFound)
+		return
+	}
 
 	json, err := serialization.SerializeDocument(&document, int(depth), parents)
 	if err != nil {

@@ -1,19 +1,18 @@
 package server
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"runtime"
 )
 
 type Metrics struct {
-	Store map[string]string
+	Store  map[string]string
 	Memory map[string]string
 }
 
-
-func (s *httpServer) collectMetrics() (*Metrics) {
+func (s *httpServer) collectMetrics() *Metrics {
 
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
@@ -28,7 +27,7 @@ func (s *httpServer) collectMetrics() (*Metrics) {
 	ss["Size"] = fmt.Sprintf("%v", len(s.storeMap))
 
 	return &Metrics{
-		Store: ss,
+		Store:  ss,
 		Memory: mm,
 	}
 }

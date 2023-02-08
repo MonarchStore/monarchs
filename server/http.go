@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"sync"
 
-	ds "github.com/arturom/monarchs/docstore"
+	ds "github.com/MonarchStore/monarchs/docstore"
 )
 
 type HTTPServer interface {
@@ -58,5 +58,4 @@ func (s *httpServer) Listen(addr string, stopChan <-chan struct{}) (err error) {
 			return
 		}
 	}
-	return	
 }

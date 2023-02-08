@@ -1,5 +1,5 @@
 image:
-  repository: cmattoon/monarchs
+  repository: monarchstore/monarchs
   tag: latest
   pullPolicy: Always
 service:
