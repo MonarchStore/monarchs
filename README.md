@@ -17,7 +17,11 @@ An example domain may define these relationships:
 * Countries may have states (or provinces)
 * States have cities
 
-The hierarchy is then defined as: `continents` -> `countries` -> `states` -> `cities`
+The hierarchy is then defined as:
+```mermaid
+graph TD;
+continents --> countries --> states --> cities
+```
 
 A hierarchical data store enforces rules to maintain the integrity of the tree structure. All elements need have a parent of the pre-defined type. In our example domain described above, countries cannot exist without a parent continent, and cities cannot be created as direct children of a country.
 
@@ -151,9 +155,46 @@ PUT http://localhost:6789/locations/cities/nyc
 ```
 
 
+##### Read the "root" document and all the elements in the hierarchy
+```http
+GET http://localhost:6789/locations/root/root?depth=4
+```
+The steps above would result in this hierarchy:
+```mermaid
+graph LR;
+root:::current
+    --> north_america[North America]:::child
+    --> usa[United States of America]:::child
+    --> ny[New York State]:::child
+    --> nyc[New York City]:::child
+
+usa
+    --> ca[California]:::child
+
+classDef current fill:#E3371E
+classDef child fill:#0593A2
+classDef parent fill:#103778
+```
+
+
+
 ##### Read a "country" document, with all of its "state" documents and "city" documents
 ```http
 GET http://localhost:6789/locations/countries/usa?depth=2
+```
+Which would result in this hierarchy:
+```mermaid
+graph LR;
+usa[United States of America]:::current
+    --> ny[New York State]:::child
+    --> nyc[New York City]:::child
+
+usa
+    --> ca[California]:::child
+
+classDef current fill:#E3371E
+classDef child fill:#0593A2
+classDef parent fill:#103778
 ```
 
 
@@ -161,12 +202,37 @@ GET http://localhost:6789/locations/countries/usa?depth=2
 ```http
 GET http://localhost:6789/locations/cities/nyc?depth=0&parents=2
 ```
+Which would result in this hierarchy:
+```mermaid
+graph LR;
+usa[United States of America]:::parent
+    --> ny[New York State]:::parent
+    --> nyc[New York City]:::current
 
-
-##### Read the "root" document and all the elements in the hierarchy
-```http
-GET http://localhost:6789/locations/root/root?depth=4
+classDef current fill:#E3371E
+classDef child fill:#0593A2
+classDef parent fill:#103778
 ```
+
+##### Read a "country" document, the parent "continent" document, and the children "state" documents
+```http
+GET http://localhost:6789/locations/countries/usa?depth=1&parents=1
+```
+Which would result in this hierarchy:
+```mermaid
+graph LR;
+north_america[North America]:::parent
+    --> usa[United States of America]:::current
+    --> ny[New York State]:::child
+usa
+    --> ca[California]:::child
+
+classDef current fill:#E3371E
+classDef child fill:#0593A2
+classDef parent fill:#103778
+```
+
+
 
 
 ##### Delete a "country" document. All children "state" documents and grandchilden "city" documents are deleted as well
